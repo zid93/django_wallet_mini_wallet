@@ -14,6 +14,7 @@ class WalletSerializer(serializers.ModelSerializer):
                   'status_wallet',
                   'disabled_at')
 
+
     def update(self, instance, validated_data):
         if self.initial_data.get('is_disabled','') == 'true' or self.initial_data.get('is_disabled','') == 'True':
             stat_value = True
@@ -26,11 +27,13 @@ class WalletSerializer(serializers.ModelSerializer):
         instance.save()
         return instance
 
+
     def conversion_bool(self, instance):
         if instance.status_wallet:
             return "Disabled"
         else:
             return "Enabled"
+
 
     def validate(self, data):
         if self.initial_data.get('is_disabled', '') == 'true' or self.initial_data.get('is_disabled', '') == 'True':
@@ -53,12 +56,11 @@ class WalletSerializer(serializers.ModelSerializer):
                 raise serializers.ValidationError("Already Enabled")
         return data
 
-
 class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ('username','email','user')
+        fields = ('username','email',)
 
 
 class UserDepositTransactionSerializer(serializers.ModelSerializer):

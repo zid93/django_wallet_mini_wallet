@@ -2,10 +2,8 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.authtoken.models import Token
 from rest_framework.views import APIView
 from mini_wallet.core.serializers import UserSerializer, WalletSerializer, UserDepositTransactionSerializer, UserWithdrawTransactionSerializer
-from mini_wallet.core.models import UserWallet, UserTransaction
+from mini_wallet.core.models import UserWallet
 from django.http.response import JsonResponse
-from rest_framework import serializers
-
 
 # Create your views here.
 
@@ -88,16 +86,26 @@ class statusWallet(APIView):
         userid = request.POST.get('user', '')
         wallet = UserWallet.objects.get(user_id=userid)
         wallet_serializer = WalletSerializer(wallet)
-
-        data = {
-            'data': {
+        if not wallet_serializer.data.get('status_wallet'):
+            data = {
                 'data': {
-                    'wallet': wallet_serializer.data
-                }
-            },
-            'status': 'success'
-        }
-        return JsonResponse(data)
+                    'data': {
+                        'wallet': wallet_serializer.data
+                    }
+                },
+                'status': 'success'
+            }
+            return JsonResponse(data)
+        else:
+            data = {
+                'data': {
+                    'data': {
+                        'error': 'disabled'
+                    }
+                },
+                'status': 'success'
+            }
+            return JsonResponse(data)
 
 class depositBalance(APIView):
     permission_classes = (IsAuthenticated,)

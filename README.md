@@ -8,3 +8,5 @@ Step to implement mini wallet, To run locally:
 4. Activate virtual env with command "source your_venv_location/bin/activate
 5. To Actived project go to path your_path/django_wallet_mini_wallet then run command "python manage.py runserver 127.0.0.1:8000"
 6. Project already run !
+
+*note : my project already have SQLlite in project, so you dont have to run "python manage.py migrate"

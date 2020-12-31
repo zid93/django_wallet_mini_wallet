@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from mini_wallet.core.models import UserWallet, UserTransaction
 from django.contrib.auth.models import User
+from rest_framework.authtoken.models import Token
 
 
 class WalletSerializer(serializers.ModelSerializer):
@@ -36,6 +37,7 @@ class WalletSerializer(serializers.ModelSerializer):
 
 
     def validate(self, data):
+        self.get_val = True
         if self.initial_data.get('is_disabled', '') == 'true' or self.initial_data.get('is_disabled', '') == 'True':
             initial_data = True
         elif self.initial_data.get('is_disabled', '') == 'false' or self.initial_data.get('is_disabled', '') == 'False':
@@ -56,11 +58,18 @@ class WalletSerializer(serializers.ModelSerializer):
                 raise serializers.ValidationError("Already Enabled")
         return data
 
-class UserSerializer(serializers.ModelSerializer):
 
+class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ('username','email',)
+
+    def to_representation(self, instance):
+        UserWallet.objects.create(balance=0, status_wallet=True, user_id=instance.id)
+        token = Token.objects.create(user=instance)
+        return {
+            'token' : token.key
+        }
 
 
 class UserDepositTransactionSerializer(serializers.ModelSerializer):
@@ -89,7 +98,7 @@ class UserDepositTransactionSerializer(serializers.ModelSerializer):
 
 
     def validate(self,data):
-        userwallet = UserWallet.objects.get(user_id=self.initial_data.get('user'))
+        userwallet = UserWallet.objects.get(user_id=self.initial_data.get('user',1))
         if userwallet.status_wallet:
             raise serializers.ValidationError('Disabled')
         return data
@@ -121,7 +130,7 @@ class UserWithdrawTransactionSerializer(serializers.ModelSerializer):
 
 
     def validate(self,data):
-        userwallet = UserWallet.objects.get(user_id=self.initial_data.get('user'))
+        userwallet = UserWallet.objects.get(user_id=self.initial_data.get('user',1))
         if userwallet.status_wallet:
             raise serializers.ValidationError('Disabled')
 

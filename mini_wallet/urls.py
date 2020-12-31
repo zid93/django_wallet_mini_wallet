@@ -20,8 +20,8 @@ from mini_wallet import settings
 
 urlpatterns = [
     url('admin/', admin.site.urls),
-    url(r'^api/v1/init/$', views.initAccount.as_view(), name='generate-token'),
-    url(r'^api/v1/wallet/$', views.statusWallet.as_view(), name='status-wallet'),
-    url(r'^api/v1/wallet/deposit/$', views.depositBalance.as_view(), name='deposit-balance'),
-    url(r'^api/v1/wallet/withdrawals/$', views.withdrawBalance.as_view(), name='withdraw-balance'),
+    url(r'^api/v1/init$', views.initAccount.as_view(), name='generate-token'),
+    url(r'^api/v1/wallet$', views.statusWallet.as_view(), name='status-wallet'),
+    url(r'^api/v1/wallet/deposit$', views.depositBalance.as_view(), name='deposit-balance'),
+    url(r'^api/v1/wallet/withdrawals$', views.withdrawBalance.as_view(), name='withdraw-balance'),
 ]
